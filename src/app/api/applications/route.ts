@@ -7,17 +7,14 @@ const dataFilePath = path.join(process.cwd(), 'data', 'applications.json')
 export async function POST(req: Request) {
   try {
     const application = await req.json()
-    
-    // Read existing data
+
     let applications = []
     try {
       const data = await fs.readFile(dataFilePath, 'utf8')
       applications = JSON.parse(data)
-    } catch (error) {
-      // File doesn't exist or is empty, start with an empty array
+    } catch {
     }
 
-    // Add new application with a unique ID and timestamp
     const newApplication = {
       id: Date.now().toString(),
       timestamp: new Date().toISOString(),
@@ -25,7 +22,6 @@ export async function POST(req: Request) {
     }
     applications.push(newApplication)
 
-    // Write updated data back to file
     await fs.writeFile(dataFilePath, JSON.stringify(applications, null, 2))
 
     return NextResponse.json({ message: 'Application submitted successfully' })
