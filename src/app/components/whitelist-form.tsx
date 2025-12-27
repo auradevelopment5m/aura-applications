@@ -63,6 +63,9 @@ const generateFormSchema = () => {
           break
         case 'url':
           fieldSchema = z.string().url(field.validationMessage)
+          if (field.pattern) {
+            fieldSchema = (fieldSchema as z.ZodString).regex(new RegExp(field.pattern), field.validationMessage)
+          }
           break
         case 'textarea':
           fieldSchema = z.string()
