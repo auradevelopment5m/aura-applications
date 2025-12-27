@@ -58,6 +58,18 @@ export interface ApplicationConfig {
   };
 }
 
+export const getAdminDiscordIds = () => applicationConfig.adminDiscordIds
+export const getMinimumAge = () => applicationConfig.minimumAge
+export const getFormSections = () => applicationConfig.sections
+export const getFormField = (sectionId: string, fieldName: string) =>
+    applicationConfig.sections
+        .find(section => section.id === sectionId)
+        ?.fields.find(field => field.name === fieldName)
+
+export const isAdmin = (discordId: string | undefined): boolean => {
+  return !!discordId && applicationConfig.adminDiscordIds.includes(discordId)
+}
+
 export const applicationConfig: ApplicationConfig = {
   // Admin Discord IDs - Add your admin Discord user IDs here
   adminDiscordIds: [
@@ -90,11 +102,11 @@ export const applicationConfig: ApplicationConfig = {
         {
           name: 'age',
           label: 'Age',
-          placeholder: '18+',
-          description: 'Must be 18 or older to apply',
+          placeholder: `${getMinimumAge()}+`,
+          description: `Must be ${getMinimumAge()} or older to apply`,
           type: 'number',
           required: true,
-          validationMessage: 'You must be at least 18 years old.',
+          validationMessage: `You must be at least ${getMinimumAge()} years old.`,
         },
       ],
     },
@@ -156,7 +168,7 @@ export const applicationConfig: ApplicationConfig = {
   ],
 
   messages: {
-    ageRequirement: 'You must be at least 18 years old.',
+    ageRequirement: `You must be at least ${getMinimumAge()} years old.`,
     steamIdInvalid: 'Invalid Steam ID. It should be a 17-digit number.',
     cfxUrlInvalid: 'Please enter a valid CFX account URL.',
     experienceMinLength: 'Please provide at least 50 characters about your RP experience.',
@@ -290,15 +302,3 @@ EXAMPLES: How to add more questions and categories
 
 Remember to update the form schema generation in whitelist-form.tsx to handle new field types!
 */
-
-export const getAdminDiscordIds = () => applicationConfig.adminDiscordIds
-export const getMinimumAge = () => applicationConfig.minimumAge
-export const getFormSections = () => applicationConfig.sections
-export const getFormField = (sectionId: string, fieldName: string) =>
-  applicationConfig.sections
-    .find(section => section.id === sectionId)
-    ?.fields.find(field => field.name === fieldName)
-
-export const isAdmin = (discordId: string | undefined): boolean => {
-  return !!discordId && applicationConfig.adminDiscordIds.includes(discordId)
-}
