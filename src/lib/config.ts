@@ -120,6 +120,7 @@ export const applicationConfig: ApplicationConfig = {
           placeholder: 'https://forum.cfx.re/u/username',
           description: 'Your CFX forum profile URL',
           type: 'url',
+          pattern: '^https?://(www\\.)?forum\\.cfx\\.re/u/[a-zA-Z0-9_-]+/?.*$',
           required: true,
           validationMessage: 'Please enter a valid CFX account URL.',
         },
