@@ -1,9 +1,8 @@
 import { NextResponse } from 'next/server'
 import fs from 'fs/promises'
 import path from 'path'
-import { getServerSession } from "next-auth/next"
-import { authOptions } from "../../auth/[...nextauth]/route"
-import { isAdmin } from '@/lib/auth'
+import { getServerSession } from "next-auth"
+import { authOptions, isAdmin } from '@/lib/auth'
 
 const archiveFilePath = path.join(process.cwd(), 'data', 'archived_applications.json')
 
@@ -18,7 +17,6 @@ export async function GET() {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
-    // Create the data directory if it doesn't exist
     const dataDir = path.join(process.cwd(), 'data')
     try {
       await fs.access(dataDir)
@@ -26,12 +24,10 @@ export async function GET() {
       await fs.mkdir(dataDir, { recursive: true })
     }
 
-    // Try to read the archive file, create it if it doesn't exist
     try {
       const data = await fs.readFile(archiveFilePath, 'utf8')
       return NextResponse.json(JSON.parse(data))
-    } catch (error) {
-      // If file doesn't exist, create it with an empty array
+    } catch {
       await fs.writeFile(archiveFilePath, '[]', 'utf8')
       return NextResponse.json([])
     }
